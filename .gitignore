@@ -10,6 +10,9 @@ libopenzwave.so
 /cpp/build/windows/vs2010/Debug/*.log
 /cpp/build/windows/vs2010/Debug/OpenZWave.tlog/*.tlog
 /cpp/build/windows/vs2010/Debug/OpenZWave.tlog/*.lastbuildstate
+/cpp/build/winRT/vs2015/GIT-VS-VERSION-FILE
+/cpp/build/winRT/vs2015/OpenZWave.userosscache
+/cpp/build/winRT/vs2015/config
 *.idb
 *.pdb
 *.log
