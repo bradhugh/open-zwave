@@ -32,6 +32,7 @@
 #include "platform/Log.h"
 #include <winstring.h>
 #include <ppltasks.h>
+#include <regex>
 
 using namespace OpenZWave;
 using namespace Windows::Devices::SerialCommunication;
@@ -79,7 +80,21 @@ bool SerialControllerImpl::Open()
 
 	try
 	{
-		auto selector = SerialDevice::GetDeviceSelectorFromUsbVidPid(0x10C4, 0xEA60);
+		uint32 vendorId = 0x10C4;
+		uint32 productId = 0xEA60;
+
+		auto pidvid_expr = std::regex("^VID_([0-9a-fA-F]+)&PID_([0-9a-fA-F]+)$");
+		std::smatch match;
+		if (std::regex_search(m_owner->m_serialControllerName, match, pidvid_expr))
+		{
+			std::string vids(match[1].first, match[1].second);
+			std::string pids(match[2].first, match[2].second);
+
+			vendorId = std::stoul(vids, nullptr, 16);
+			productId = std::stoul(pids, nullptr, 16);
+		}
+
+		auto selector = SerialDevice::GetDeviceSelectorFromUsbVidPid(vendorId, productId);
 
 		return create_task(DeviceInformation::FindAllAsync(selector))
 			.then([this](DeviceInformationCollection ^ devices) -> IAsyncOperation<SerialDevice ^> ^
